@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import { Footer } from './ChatBar.jsx';
-import { Main } from './Message.jsx';
+import { ChatBar } from './ChatBar.jsx';
+import { MessageList } from './MessageList.jsx';
+import messages from './messages.json';
 
 function Navbar() {
   return (
@@ -13,13 +14,16 @@ function Navbar() {
 class App extends Component {
   constructor() {
     super();
+    this.state = { messages };
   }
   render() {
+    const currentUserName = this.state.messages.currentUser.name;
+
     return (
       <div>
       <Navbar />
-      <Main />
-      <Footer />
+      <MessageList />
+      <ChatBar username={currentUserName}/>
       </div>
     );
   }

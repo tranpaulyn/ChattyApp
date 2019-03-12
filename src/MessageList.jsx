@@ -1,3 +1,4 @@
+/* 
 state.messages = [
     {
       type: "incomingMessage",
@@ -33,3 +34,31 @@ state.messages = [
       content: "Anonymous2 changed their name to NotFunny",
     },
   ]
+*/
+
+import React, {Component} from 'react';
+import { Message } from './Message.jsx';
+import messages from './messages.json';
+
+export class MessageList extends Component {
+    constructor (){
+        super();
+        this.state = {messages};
+    }
+    render() {
+        const messages = this.state.messages.messages.map(message => {
+            console.log(message.username);
+            console.log(message.content);
+            <Message username={message.username} content={message.content}/>
+        });
+        return (
+            <main className="messages">
+            {messages}
+                <div className="message system">
+                    Anonymous1 changed their name to nomnom.
+                </div>
+            </main>
+        );
+    }
+    
+}
