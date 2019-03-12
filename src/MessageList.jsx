@@ -47,9 +47,7 @@ export class MessageList extends Component {
     }
     render() {
         const messages = this.state.messages.messages.map(message => {
-            console.log(message.username);
-            console.log(message.content);
-            <Message username={message.username} content={message.content}/>
+            return (<Message key={message.id} message={message}/>)
         });
         return (
             <main className="messages">

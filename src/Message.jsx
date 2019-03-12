@@ -1,21 +1,19 @@
 import React, {Component} from 'react';
-import messages from './messages.json';
+
 
 export class Message extends Component {
     constructor (){
         super();
-        this.state = {messages};
     }
     render() {
-    // const messages = this.state.messages.messages.map(message => {
-    //     const username = message.username;
-    //     const content = message.content;
-    // });
         return (
+            <main className="messages">
             <div className="message">
-                <span className="message-username">{props.username}</span>
-                <span className="message-content">{props.content}</span>
+                <span className="message-username">{this.props.message.username}</span>
+                <span className="message-content">{this.props.message.content}</span>
             </div>
+
+            </main>
         );
     }
     
