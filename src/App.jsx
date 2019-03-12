@@ -1,10 +1,28 @@
 import React, {Component} from 'react';
+import { Footer } from './ChatBar.jsx';
+import { Main } from './Message.jsx';
+
+function Navbar() {
+  return (
+    <nav className="navbar">
+      <a href="/" className="navbar-brand">Chatty</a>
+    </nav>
+  );
+}
 
 class App extends Component {
+  constructor() {
+    super();
+  }
   render() {
     return (
-      <h1>Hello React :)</h1>
+      <div>
+      <Navbar />
+      <Main />
+      <Footer />
+      </div>
     );
   }
 }
 export default App;
+
