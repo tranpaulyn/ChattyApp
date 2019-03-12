@@ -2,9 +2,6 @@ import React, {Component} from 'react';
 
 
 export class Message extends Component {
-    constructor (){
-        super();
-    }
     render() {
         return (
             <main className="messages">
