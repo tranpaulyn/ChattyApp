@@ -17,6 +17,7 @@ class App extends Component {
     super();
     this.state = messages;
     this.addNewMessage = this.addNewMessage.bind(this);
+    this.ws = new WebSocket('ws://localhost:3001');
   }
 
     // in App.jsx
@@ -32,10 +33,15 @@ componentDidMount() {
     this.setState({messages: messages})
   }, 3000);
 
-  this.ws = new WebSocket('ws://localhost:3001');
+  const parent = this 
 
   this.ws.onopen = function () {
     console.log('connected!');
+    parent.ws.send('Hello from the darkside.')
+  }
+
+  this.ws.onmessage = function(message) {
+    console.log('hey a new message', message);
   }
 
   this.ws.onclose = function () {
@@ -50,9 +56,10 @@ componentDidMount() {
     };
     const oldMessages = this.state.messages;
     const newMessage = {id: ID(), username:this.state.currentUser.name, content: message};
+    const user = this.state.currentUser.name;
     const updatedMessages = oldMessages.concat(newMessage);
-    console.log(updatedMessages);
     this.setState({ messages: updatedMessages});
+    this.ws.send(`User ${user} said ${message}`);
   }
 
   render() {
