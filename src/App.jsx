@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import { ChatBar } from './ChatBar.jsx';
 import { MessageList } from './MessageList.jsx';
-import { Message } from './Message.jsx'
 import messages from './messages.json';
 
 function Navbar() {
@@ -32,6 +31,8 @@ componentDidMount() {
     // Calling setState will trigger a call to render() in App and all child components.
     this.setState({messages: messages})
   }, 3000);
+
+  
 }
 
   addNewMessage(message) {
