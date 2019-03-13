@@ -12,10 +12,12 @@ function Navbar() {
   );
 }
 
+
 class App extends Component {
   constructor() {
     super();
     this.state = messages;
+    this.addNewMessage = this.addNewMessage.bind(this);
   }
 
     // in App.jsx
@@ -32,6 +34,17 @@ componentDidMount() {
   }, 3000);
 }
 
+  addNewMessage(message) {
+    let ID = function () {
+      return Math.random().toString(36).substr(2, 9);
+    };
+    const oldMessages = this.state.messages;
+    const newMessage = {id: ID(), username:this.state.currentUser.name, content: message};
+    const updatedMessages = oldMessages.concat(newMessage);
+    console.log(updatedMessages);
+    this.setState({ messages: updatedMessages});
+  }
+
   render() {
     const currentUserName = this.state.currentUser.name;
 
@@ -39,7 +52,7 @@ componentDidMount() {
       <div>
       <Navbar />
       <MessageList messages={this.state.messages}/>
-      <ChatBar username={currentUserName}/>
+      <ChatBar username={currentUserName} addNewMessage={this.addNewMessage} />
       </div>
     );
   }
