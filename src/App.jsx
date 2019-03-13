@@ -15,7 +15,10 @@ function Navbar() {
 class App extends Component {
   constructor() {
     super();
-    this.state = messages;
+    this.state = {
+      currentUser: {name: "Bob"},
+      messages: []
+    };
     this.addNewMessage = this.addNewMessage.bind(this);
     this.ws = new WebSocket('ws://localhost:3001');
   }
@@ -37,11 +40,12 @@ componentDidMount() {
 
   this.ws.onopen = function () {
     console.log('connected!');
-    parent.ws.send('Hello from the darkside.')
   }
 
   this.ws.onmessage = function(message) {
-    console.log('hey a new message', message);
+    let receivedMessage = JSON.parse(message.data);
+    const newMessages = parent.state.messages.concat(receivedMessage);
+    parent.setState({messages: newMessages})
   }
 
   this.ws.onclose = function () {
@@ -51,15 +55,12 @@ componentDidMount() {
 }
 
   addNewMessage(message) {
-    let ID = function () {
-      return Math.random().toString(36).substr(2, 9);
-    };
     const oldMessages = this.state.messages;
-    const newMessage = {id: ID(), username:this.state.currentUser.name, content: message};
-    const user = this.state.currentUser.name;
-    const updatedMessages = oldMessages.concat(newMessage);
-    this.setState({ messages: updatedMessages});
-    this.ws.send(`User ${user} said ${message}`);
+    const newMessage = {username: this.state.currentUser.name, content: message};
+    let obj = JSON.stringify(newMessage);
+    // const updatedMessages = oldMessages.concat(newMessage);
+    // this.setState({ messages: updatedMessages});
+    this.ws.send(obj);
   }
 
   render() {
