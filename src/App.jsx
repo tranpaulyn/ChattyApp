@@ -32,6 +32,15 @@ componentDidMount() {
     this.setState({messages: messages})
   }, 3000);
 
+  this.ws = new WebSocket('ws://localhost:3001');
+
+  this.ws.onopen = function () {
+    console.log('connected!');
+  }
+
+  this.ws.onclose = function () {
+    console.log('disconnected :(');
+  }
   
 }
 
