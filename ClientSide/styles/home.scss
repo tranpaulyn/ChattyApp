@@ -1,5 +1,7 @@
 body {
   background: white;
+  background-image: url("http://paulyntran.com/wp-content/uploads/2019/03/original.gif");
+  background-repeat: repeat;
   color: black;
   font-family: 'Open Sans', sans-serif;
   font-size: 14px;
@@ -7,8 +9,8 @@ body {
 }
 
 .chatbar {
-  background: tomato;
-  border-top: 1px solid black;
+  background: #ffe6ee;
+  border-top: 1px solid #Fff;
   bottom: 0;
   display: flex;
   left: 0;
@@ -19,7 +21,7 @@ body {
 
 .chatbar-message,
 .chatbar-username {
-  border: 1px solid black;
+  border: 1px solid #fff;
   display: block;
   height: 40px;
   line-height: 40px;
@@ -29,10 +31,12 @@ body {
 
 .chatbar-message {
   flex: 8;
+  border-radius: 1em;
 }
 
 .chatbar-username {
   flex: 2;
+  border-radius: 1em;
 }
 
 .message {
@@ -62,8 +66,8 @@ body {
 }
 
 .navbar {
-  background: tomato;
-  border-bottom: 1px solid black;
+  background: #ffe6ee;
+  border-bottom: 1px solid #fff;
   height: 60px;
   left: 0;
   padding: 0 10px;
@@ -73,21 +77,29 @@ body {
 }
 
 .navbar-brand {
-  color: inherit;
+  color: #fff;
   display: block;
   float: left;
   font-weight: 700;
-  font-size: 28px;
+  font-size: 30px;
   height: 60px;
   line-height: 60px;
   padding: 0 10px;
   text-decoration: none;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: lightgrey;
 }
 
 .navbar-counter {
+  color: darkgrey;
   float:right;
   display: block;
   font-size: 20px;
   padding-top: 20px;
   padding-right: 10px;
+}
+
+.image {
+  border-radius: 1em;
+  max-width: 45%;
 }

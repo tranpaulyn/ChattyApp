@@ -29,7 +29,7 @@ export class Message extends Component {
             case "incomingImage":
             return (<div className="message">
                 <span style={style} className="message-username">{this.props.message.username}</span>
-                <span className="message-content"><img alt="I sent a broken URL!" src={imgURL} /></span>
+                <span className="message-content"><img className="image" alt="I sent a broken URL!" src={imgURL} /></span>
             </div>)
             break;
     }
