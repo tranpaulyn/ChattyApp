@@ -30,7 +30,6 @@ class App extends Component {
     // Receive Message from server and change the state
     this.ws.onmessage = function(message) {
       let receivedMessage = JSON.parse(message.data);
-      let userIds = [];
 
       switch(receivedMessage.type) {
         case "incomingMessage":
@@ -43,7 +42,10 @@ class App extends Component {
           break;
         case "userCountChanged":
           parent.setState({onlineUsers: receivedMessage});
-          console.log(receivedMessage);
+          break;
+        case "incomingImage":
+          const newImage = parent.state.messages.concat(receivedMessage);
+          parent.setState({messages: newImage})
           break;
         default:
           throw new Error("Unknown event type " + receivedMessage.type);
@@ -59,12 +61,26 @@ class App extends Component {
 }
   // Receive message from chatbar and send it to the server
   addNewMessage(message) {
-    const newMessage = {
-      username: this.state.currentUser.name, 
-      content: message, 
-      type:"postMessage"};
-    let obj = JSON.stringify(newMessage);
-    this.ws.send(obj);
+    // let l3 = message.length - 3
+    // let l2 = message.length - 2
+    // let l1 = message.length - 1
+    let image = message.slice(message.length - 3);
+
+    if (image === 'png' || image === 'gif' || image === 'jpg') {
+      const newMessage = {
+        username: this.state.currentUser.name, 
+        content: message, 
+        type:"postImage"};
+      let obj = JSON.stringify(newMessage);
+      this.ws.send(obj);
+    } else {
+      const newMessage = {
+        username: this.state.currentUser.name, 
+        content: message, 
+        type:"postMessage"};
+      let obj = JSON.stringify(newMessage);
+      this.ws.send(obj);
+    }
   }
 
   // Receive name change from chatbar and send it to the server
