@@ -8,7 +8,6 @@ export class Message extends Component {
             return (<div className="message system">
             {this.props.message.content}
             </div>)
-            break;
             case "incomingMessage":
             return (
             <div className="message">

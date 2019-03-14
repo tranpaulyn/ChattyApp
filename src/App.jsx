@@ -43,7 +43,7 @@ componentDidMount() {
         parent.setState({messages: newMessages})
         break;
       case "incomingNotification":
-        const newNotifications = parent.state.notifications.concat(receivedMessage);
+        const newNotifications = parent.state.messages.concat(receivedMessage);
         parent.setState({messages: newNotifications});
         break;
       default:
