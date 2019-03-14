@@ -7,25 +7,21 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      currentUser: {name: "Anonymous"},
+      currentUser: {name: "Anonymous"}, // Set current user as Anonymous until they set their name
       messages: [],
       notifications: [],
       onlineUsers: [],
     };
     this.addNewMessage = this.addNewMessage.bind(this);
-    this.ws = new WebSocket('ws://localhost:3001');
     this.changeName = this.changeName.bind(this);
+    this.ws = new WebSocket('ws://localhost:3001');
   }
 
   componentDidMount() {
-    console.log("componentDidMount <App />");
-
     const parent = this 
 
     // Check Connection
-    this.ws.onopen = function () {
-      console.log('connected!');
-    }
+    this.ws.onopen = function () {};
 
     // Receive Message from server and change the state
     this.ws.onmessage = function(message) {
@@ -51,22 +47,19 @@ class App extends Component {
           throw new Error("Unknown event type " + receivedMessage.type);
 
       }
-    }
+    };
 
     // Disconnect from websocket
-    this.ws.onclose = function () {
-      console.log('disconnected :(');
-    }
+    this.ws.onclose = function () {};
   
 }
   // Receive message from chatbar and send it to the server
   addNewMessage(message) {
-    // let l3 = message.length - 3
-    // let l2 = message.length - 2
-    // let l1 = message.length - 1
+    // Check if the message ends with an image file extension
     let image = message.slice(message.length - 3);
 
     if (image === 'png' || image === 'gif' || image === 'jpg') {
+      // If an image URL was sent, set different message type
       const newMessage = {
         username: this.state.currentUser.name, 
         content: message, 
@@ -85,10 +78,13 @@ class App extends Component {
 
   // Receive name change from chatbar and send it to the server
   changeName(name) {
+    // Hold on to the original name to compare it
     let oldName = this.state.currentUser.name;
 
     this.setState({currentUser: {name: name}}, () => {
+      // Create a message to notify the name change
       let changeMessage = `${oldName} has changed their name to ${this.state.currentUser.name}`;
+      // Create an object with the information and stringify it to send to the server
       const changeNameMessage = {
         username: this.state.currentUser.name, 
         content: changeMessage, 

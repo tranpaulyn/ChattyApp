@@ -6,23 +6,28 @@ export class ChatBar extends Component {
         this.keyHandler = this.keyHandler.bind(this);
         this.changeUsername = this.changeUsername.bind(this);
     }
+
+    // Message Handler
     keyHandler(evt) {
+        // When they press enter
         if (evt.keyCode === 13) {
             // Make sure field is not empty
             if (evt.target.value.length >= 1) {
                 this.props.addNewMessage(evt.target.value);
-                evt.target.value = null;
+                evt.target.value = null; // Clears the area, ready for next message
             }
         };
     }
 
+    // Username Change Handler
     changeUsername(evt) {
+        // When they press enter
         if (evt.keyCode === 13) {
+            // Make sure field is not empty
             if (evt.target.value.length >= 1) {
+                // New username cannot be the same as the old username
                 if (this.props.username !== evt.target.value) {
                     this.props.changeName(evt.target.value);
-                } else {
-                    console.log('Add a warning');
                 }
             }
         }
