@@ -17,45 +17,47 @@ class App extends Component {
     this.changeName = this.changeName.bind(this);
   }
 
-    // in App.jsx
-componentDidMount() {
-  console.log("componentDidMount <App />");
+  componentDidMount() {
+    console.log("componentDidMount <App />");
 
-  const parent = this 
+    const parent = this 
 
-  this.ws.onopen = function () {
-    console.log('connected!');
-  }
-
-  this.ws.onmessage = function(message) {
-    let receivedMessage = JSON.parse(message.data);
-    let userIds = [];
-
-    switch(receivedMessage.type) {
-      case "incomingMessage":
-        const newMessages = parent.state.messages.concat(receivedMessage);
-        parent.setState({messages: newMessages})
-        break;
-      case "incomingNotification":
-        const newNotifications = parent.state.messages.concat(receivedMessage);
-        parent.setState({messages: newNotifications});
-        break;
-      case "userCountChanged":
-        parent.setState({onlineUsers: receivedMessage});
-        console.log(receivedMessage);
-        break;
-      default:
-        throw new Error("Unknown event type " + receivedMessage.type);
-
+    // Check Connection
+    this.ws.onopen = function () {
+      console.log('connected!');
     }
-  }
 
-  this.ws.onclose = function () {
-    console.log('disconnected :(');
-  }
+    // Receive Message from server and change the state
+    this.ws.onmessage = function(message) {
+      let receivedMessage = JSON.parse(message.data);
+      let userIds = [];
+
+      switch(receivedMessage.type) {
+        case "incomingMessage":
+          const newMessages = parent.state.messages.concat(receivedMessage);
+          parent.setState({messages: newMessages})
+          break;
+        case "incomingNotification":
+          const newNotifications = parent.state.messages.concat(receivedMessage);
+          parent.setState({messages: newNotifications});
+          break;
+        case "userCountChanged":
+          parent.setState({onlineUsers: receivedMessage});
+          console.log(receivedMessage);
+          break;
+        default:
+          throw new Error("Unknown event type " + receivedMessage.type);
+
+      }
+    }
+
+    // Disconnect from websocket
+    this.ws.onclose = function () {
+      console.log('disconnected :(');
+    }
   
 }
-
+  // Receive message from chatbar and send it to the server
   addNewMessage(message) {
     const newMessage = {
       username: this.state.currentUser.name, 
@@ -65,6 +67,7 @@ componentDidMount() {
     this.ws.send(obj);
   }
 
+  // Receive name change from chatbar and send it to the server
   changeName(name) {
     let oldName = this.state.currentUser.name;
 
@@ -80,20 +83,16 @@ componentDidMount() {
   }
 
   render() {
-    const currentUserName = this.state.currentUser.name;
-
     return (
       <div>
       <NavBar count={this.state.onlineUsers.userCount}/>
       <MessageList messages={this.state.messages} color={this.state.messages.color}/>
-      <ChatBar username={currentUserName} addNewMessage={this.addNewMessage} changeName={this.changeName}/>
+      <ChatBar username={this.state.currentUser.name} addNewMessage={this.addNewMessage} changeName={this.changeName}/>
       </div>
     );
   }
 
 }
-
-
 
 export default App;
 
