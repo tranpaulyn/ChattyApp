@@ -18,9 +18,12 @@ export class ChatBar extends Component {
 
     changeUsername(evt) {
         if (evt.keyCode === 13) {
-            console.log(this.props.currentUser.name)
             if (evt.target.value.length >= 1) {
-            this.props.changeName(evt.target.value);
+                if (this.props.username !== evt.target.value) {
+                    this.props.changeName(evt.target.value);
+                } else {
+                    console.log('Add a warning');
+                }
             }
         }
     }
