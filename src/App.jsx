@@ -1,14 +1,7 @@
 import React, {Component} from 'react';
 import { ChatBar } from './ChatBar.jsx';
 import { MessageList } from './MessageList.jsx';
-
-function Navbar() {
-  return (
-    <nav className="navbar">
-      <a href="/" className="navbar-brand">Chatty</a>
-    </nav>
-  );
-}
+import { NavBar } from './NavBar.jsx'
 
 
 class App extends Component {
@@ -17,7 +10,8 @@ class App extends Component {
     this.state = {
       currentUser: {name: "Annonymous"},
       messages: [],
-      notifications: []
+      notifications: [],
+      onlineUsers: 0,
     };
     this.addNewMessage = this.addNewMessage.bind(this);
     this.ws = new WebSocket('ws://localhost:3001');
@@ -45,6 +39,9 @@ componentDidMount() {
       case "incomingNotification":
         const newNotifications = parent.state.messages.concat(receivedMessage);
         parent.setState({messages: newNotifications});
+        break;
+      case "userCountChanged":
+        parent.setState({onlineUsers: receivedMessage.userCount});
         break;
       default:
         throw new Error("Unknown event type " + receivedMessage.type);
@@ -86,7 +83,7 @@ componentDidMount() {
 
     return (
       <div>
-      <Navbar />
+      <NavBar count={this.state.onlineUsers}/>
       <MessageList messages={this.state.messages}/>
       <ChatBar username={currentUserName} addNewMessage={this.addNewMessage} changeName={this.changeName}/>
       </div>
