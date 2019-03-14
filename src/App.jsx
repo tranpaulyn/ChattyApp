@@ -2,8 +2,7 @@ import React, {Component} from 'react';
 import { ChatBar } from './ChatBar.jsx';
 import { MessageList } from './MessageList.jsx';
 import { NavBar } from './NavBar.jsx'
-
-
+ 
 class App extends Component {
   constructor() {
     super();
@@ -11,7 +10,7 @@ class App extends Component {
       currentUser: {name: "Annonymous"},
       messages: [],
       notifications: [],
-      onlineUsers: 0,
+      onlineUsers: [],
     };
     this.addNewMessage = this.addNewMessage.bind(this);
     this.ws = new WebSocket('ws://localhost:3001');
@@ -30,6 +29,7 @@ componentDidMount() {
 
   this.ws.onmessage = function(message) {
     let receivedMessage = JSON.parse(message.data);
+    let userIds = [];
 
     switch(receivedMessage.type) {
       case "incomingMessage":
@@ -41,7 +41,8 @@ componentDidMount() {
         parent.setState({messages: newNotifications});
         break;
       case "userCountChanged":
-        parent.setState({onlineUsers: receivedMessage.userCount});
+        parent.setState({onlineUsers: receivedMessage});
+        console.log(receivedMessage);
         break;
       default:
         throw new Error("Unknown event type " + receivedMessage.type);
@@ -83,8 +84,8 @@ componentDidMount() {
 
     return (
       <div>
-      <NavBar count={this.state.onlineUsers}/>
-      <MessageList messages={this.state.messages}/>
+      <NavBar count={this.state.onlineUsers.userCount}/>
+      <MessageList messages={this.state.messages} color={this.state.messages.color}/>
       <ChatBar username={currentUserName} addNewMessage={this.addNewMessage} changeName={this.changeName}/>
       </div>
     );
