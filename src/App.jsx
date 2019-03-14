@@ -17,54 +17,73 @@ class App extends Component {
     this.changeName = this.changeName.bind(this);
   }
 
-    // in App.jsx
-componentDidMount() {
-  console.log("componentDidMount <App />");
+  componentDidMount() {
+    console.log("componentDidMount <App />");
 
-  const parent = this 
+    const parent = this 
 
-  this.ws.onopen = function () {
-    console.log('connected!');
-  }
+    // Check Connection
+    this.ws.onopen = function () {
+      console.log('connected!');
+    }
 
-  this.ws.onmessage = function(message) {
-    let receivedMessage = JSON.parse(message.data);
-    let userIds = [];
+    // Receive Message from server and change the state
+    this.ws.onmessage = function(message) {
+      let receivedMessage = JSON.parse(message.data);
 
-    switch(receivedMessage.type) {
-      case "incomingMessage":
-        const newMessages = parent.state.messages.concat(receivedMessage);
-        parent.setState({messages: newMessages})
-        break;
-      case "incomingNotification":
-        const newNotifications = parent.state.messages.concat(receivedMessage);
-        parent.setState({messages: newNotifications});
-        break;
-      case "userCountChanged":
-        parent.setState({onlineUsers: receivedMessage});
-        console.log(receivedMessage);
-        break;
-      default:
-        throw new Error("Unknown event type " + receivedMessage.type);
+      switch(receivedMessage.type) {
+        case "incomingMessage":
+          const newMessages = parent.state.messages.concat(receivedMessage);
+          parent.setState({messages: newMessages})
+          break;
+        case "incomingNotification":
+          const newNotifications = parent.state.messages.concat(receivedMessage);
+          parent.setState({messages: newNotifications});
+          break;
+        case "userCountChanged":
+          parent.setState({onlineUsers: receivedMessage});
+          break;
+        case "incomingImage":
+          const newImage = parent.state.messages.concat(receivedMessage);
+          parent.setState({messages: newImage})
+          break;
+        default:
+          throw new Error("Unknown event type " + receivedMessage.type);
 
+      }
+    }
+
+    // Disconnect from websocket
+    this.ws.onclose = function () {
+      console.log('disconnected :(');
+    }
+  
+}
+  // Receive message from chatbar and send it to the server
+  addNewMessage(message) {
+    // let l3 = message.length - 3
+    // let l2 = message.length - 2
+    // let l1 = message.length - 1
+    let image = message.slice(message.length - 3);
+
+    if (image === 'png' || image === 'gif' || image === 'jpg') {
+      const newMessage = {
+        username: this.state.currentUser.name, 
+        content: message, 
+        type:"postImage"};
+      let obj = JSON.stringify(newMessage);
+      this.ws.send(obj);
+    } else {
+      const newMessage = {
+        username: this.state.currentUser.name, 
+        content: message, 
+        type:"postMessage"};
+      let obj = JSON.stringify(newMessage);
+      this.ws.send(obj);
     }
   }
 
-  this.ws.onclose = function () {
-    console.log('disconnected :(');
-  }
-  
-}
-
-  addNewMessage(message) {
-    const newMessage = {
-      username: this.state.currentUser.name, 
-      content: message, 
-      type:"postMessage"};
-    let obj = JSON.stringify(newMessage);
-    this.ws.send(obj);
-  }
-
+  // Receive name change from chatbar and send it to the server
   changeName(name) {
     let oldName = this.state.currentUser.name;
 
@@ -80,20 +99,16 @@ componentDidMount() {
   }
 
   render() {
-    const currentUserName = this.state.currentUser.name;
-
     return (
       <div>
       <NavBar count={this.state.onlineUsers.userCount}/>
       <MessageList messages={this.state.messages} color={this.state.messages.color}/>
-      <ChatBar username={currentUserName} addNewMessage={this.addNewMessage} changeName={this.changeName}/>
+      <ChatBar username={this.state.currentUser.name} addNewMessage={this.addNewMessage} changeName={this.changeName}/>
       </div>
     );
   }
 
 }
-
-
 
 export default App;
 
