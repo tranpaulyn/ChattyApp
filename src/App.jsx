@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import { ChatBar } from './ChatBar.jsx';
 import { MessageList } from './MessageList.jsx';
-import messages from './messages.json';
 
 function Navbar() {
   return (
@@ -45,8 +44,16 @@ componentDidMount() {
 
   this.ws.onmessage = function(message) {
     let receivedMessage = JSON.parse(message.data);
-    const newMessages = parent.state.messages.concat(receivedMessage);
-    parent.setState({messages: newMessages})
+    // console.log(receivedMessage.type);
+    // If incomingMessage type, show message as usual
+    if (receivedMessage.type === 'incomingMessage') {
+      const newMessages = parent.state.messages.concat(receivedMessage);
+      parent.setState({messages: newMessages})
+    } else { // Else if incomingNotification, show username change message
+      console.log('Notification not a message')
+      console.log(receivedMessage.type);
+    }
+
   }
 
   this.ws.onclose = function () {
@@ -56,17 +63,24 @@ componentDidMount() {
 }
 
   addNewMessage(message) {
-    const newMessage = {username: this.state.currentUser.name, content: message};
+    const newMessage = {username: this.state.currentUser.name, content: message, type:"postMessage"};
     let obj = JSON.stringify(newMessage);
     this.ws.send(obj);
   }
 
   changeName(name) {
+    let oldName = this.state.currentUser.name;
     this.setState({currentUser: {name: name}}, () => {
-      console.log(this.state.currentUser);
+      // If username did not change do a warning
+      if (oldName === this.state.currentUser.name) {
+        console.log('Try again bud!');
+      }
+      let changeMessage = `${oldName} has changed their name to ${this.state.currentUser.name}`;
+      const changeNameMessage = {username: this.state.currentUser.name, content: changeMessage, type:"postNotification"}
+      let obj = JSON.stringify(changeNameMessage);
+      console.log(obj);
+      this.ws.send(obj);
     });
-    let obj = JSON.stringify(this.state.currentUser);
-    this.ws.send(obj);
   }
 
   render() {
@@ -75,7 +89,7 @@ componentDidMount() {
     return (
       <div>
       <Navbar />
-      <MessageList messages={this.state.messages}/>
+      <MessageList messages={this.state.messages} />
       <ChatBar username={currentUserName} addNewMessage={this.addNewMessage} changeName={this.changeName}/>
       </div>
     );

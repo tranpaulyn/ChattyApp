@@ -18,14 +18,17 @@ export class ChatBar extends Component {
 
     changeUsername(evt) {
         if (evt.keyCode === 13) {
+            console.log(this.props.currentUser.name)
+            if (evt.target.value.length >= 1) {
             this.props.changeName(evt.target.value);
+            }
         }
     }
 
     render() {
     return (
         <footer className="chatbar">
-      <input className="chatbar-username" onKeyUp={this.changeUsername} placeholder="Your Name (Optional)"  name="username"/>
+      <input className="chatbar-username" onKeyUp={this.changeUsername} placeholder="Your Name (Optional)"  name="username" defaultValue={this.props.username}/>
       <input className="chatbar-message" onKeyUp={this.keyHandler} placeholder="Type a message and hit ENTER" name="newMessage"/>
     </footer>
       );
@@ -33,4 +36,4 @@ export class ChatBar extends Component {
     
 }
 
-// defaultValue={this.props.username}
+// 
