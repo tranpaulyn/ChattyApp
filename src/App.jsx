@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import { ChatBar } from './ChatBar.jsx';
 import { MessageList } from './MessageList.jsx';
-import messages from './messages.json';
 
 function Navbar() {
   return (
@@ -17,7 +16,8 @@ class App extends Component {
     super();
     this.state = {
       currentUser: {name: "Annonymous"},
-      messages: []
+      messages: [],
+      notifications: []
     };
     this.addNewMessage = this.addNewMessage.bind(this);
     this.ws = new WebSocket('ws://localhost:3001');
@@ -27,15 +27,6 @@ class App extends Component {
     // in App.jsx
 componentDidMount() {
   console.log("componentDidMount <App />");
-  setTimeout(() => {
-    console.log("Simulating incoming message");
-    // Add a new message to the list of messages in the data store
-    const newMessages = {id: 3, username: "Michelle", content: "Hello there!"};
-    const messages = this.state.messages.concat(newMessages)
-    // Update the state of the app component.
-    // Calling setState will trigger a call to render() in App and all child components.
-    this.setState({messages: messages})
-  }, 3000);
 
   const parent = this 
 
@@ -45,8 +36,20 @@ componentDidMount() {
 
   this.ws.onmessage = function(message) {
     let receivedMessage = JSON.parse(message.data);
-    const newMessages = parent.state.messages.concat(receivedMessage);
-    parent.setState({messages: newMessages})
+
+    switch(receivedMessage.type) {
+      case "incomingMessage":
+        const newMessages = parent.state.messages.concat(receivedMessage);
+        parent.setState({messages: newMessages})
+        break;
+      case "incomingNotification":
+        const newNotifications = parent.state.notifications.concat(receivedMessage);
+        parent.setState({messages: newNotifications});
+        break;
+      default:
+        throw new Error("Unknown event type " + receivedMessage.type);
+
+    }
   }
 
   this.ws.onclose = function () {
@@ -56,17 +59,26 @@ componentDidMount() {
 }
 
   addNewMessage(message) {
-    const newMessage = {username: this.state.currentUser.name, content: message};
+    const newMessage = {
+      username: this.state.currentUser.name, 
+      content: message, 
+      type:"postMessage"};
     let obj = JSON.stringify(newMessage);
     this.ws.send(obj);
   }
 
   changeName(name) {
+    let oldName = this.state.currentUser.name;
+
     this.setState({currentUser: {name: name}}, () => {
-      console.log(this.state.currentUser);
+      let changeMessage = `${oldName} has changed their name to ${this.state.currentUser.name}`;
+      const changeNameMessage = {
+        username: this.state.currentUser.name, 
+        content: changeMessage, 
+        type:"postNotification"}
+      let obj = JSON.stringify(changeNameMessage);
+      this.ws.send(obj);
     });
-    let obj = JSON.stringify(this.state.currentUser);
-    this.ws.send(obj);
   }
 
   render() {
