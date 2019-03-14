@@ -16,11 +16,12 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      currentUser: {name: "Bob"},
+      currentUser: {name: "Annonymous"},
       messages: []
     };
     this.addNewMessage = this.addNewMessage.bind(this);
     this.ws = new WebSocket('ws://localhost:3001');
+    this.changeName = this.changeName.bind(this);
   }
 
     // in App.jsx
@@ -55,11 +56,16 @@ componentDidMount() {
 }
 
   addNewMessage(message) {
-    const oldMessages = this.state.messages;
     const newMessage = {username: this.state.currentUser.name, content: message};
     let obj = JSON.stringify(newMessage);
-    // const updatedMessages = oldMessages.concat(newMessage);
-    // this.setState({ messages: updatedMessages});
+    this.ws.send(obj);
+  }
+
+  changeName(name) {
+    this.setState({currentUser: {name: name}}, () => {
+      console.log(this.state.currentUser);
+    });
+    let obj = JSON.stringify(this.state.currentUser);
     this.ws.send(obj);
   }
 
@@ -70,7 +76,7 @@ componentDidMount() {
       <div>
       <Navbar />
       <MessageList messages={this.state.messages}/>
-      <ChatBar username={currentUserName} addNewMessage={this.addNewMessage} />
+      <ChatBar username={currentUserName} addNewMessage={this.addNewMessage} changeName={this.changeName}/>
       </div>
     );
   }
