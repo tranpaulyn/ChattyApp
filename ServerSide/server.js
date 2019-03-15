@@ -8,22 +8,23 @@ const PORT = 3001;
 
 // Create a new express server
 const server = express()
+   // Make the express server serve static assets (html, javascript, css) from the /public folder
   .use(express.static('public'))
   .listen(PORT, '0.0.0.0', 'localhost', () => console.log(`Listening on ${ PORT }`));
 
 // Create the WebSockets server
 const wss = new SocketServer({ server });
 
-// Set counter for number of users
+// Set user counter and increase everytime a user connects to the server
 let onlineUsers = 0;
 
-// Colors to give to users
+// Array of colors, randomly assigned when user connects to server and sends a message
 let userColors = ['#3D50E2', '#6070E8', '#8995EF', '#1A31DB', '#0D20AC'];
 
 wss.on('connection', (ws) => {
   // Sending & Displaying number of online users & assign color
-  // Increase counter on connection and send the counter to the NavBar
   onlineUsers += 1;
+  ws.uniqueColor = userColors[onlineUsers % 5];
 
   let numberOfUsers = JSON.stringify({
     type: "userCountChanged",
@@ -36,11 +37,8 @@ wss.on('connection', (ws) => {
     }
   });
 
-  // give a color to a user
-  ws.uniqueColor = userColors[onlineUsers % 5];
-
   // Receiving a message/notification from the front end
-  // Send it back with unique ID and color for the user
+  // Send it back with unique ID
   ws.on('message', (message) => {
     let obj = JSON.parse(message)
 
@@ -73,7 +71,7 @@ wss.on('connection', (ws) => {
           }
         });
         break;
-        
+
       case "postImage":
         let image = JSON.stringify({
           id: uuidv1(), 
@@ -86,17 +84,18 @@ wss.on('connection', (ws) => {
               client.send(image);
             }
           });
-      break;
+          break;
     }
-
-
   });
 
   // Set up a callback for when a client closes the socket. This usually means they closed their browser.
   ws.on('close', () => {
-    console.log('Client disconnected');
     onlineUsers -= 1;
-    console.log(onlineUsers);
+    // When disconnected broadcast number of users again, to update
+    wss.clients.forEach(function each(client) {
+      if (client.readyState === WebSocketServer.OPEN) {
+        client.send(numberOfUsers);
+      }
+    });
   });
-
 });

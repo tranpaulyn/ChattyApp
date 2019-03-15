@@ -45,14 +45,13 @@ class App extends Component {
           break;
         default:
           throw new Error("Unknown event type " + receivedMessage.type);
-
       }
     };
 
     // Disconnect from websocket
     this.ws.onclose = function () {};
-  
-}
+  }
+
   // Receive message from chatbar and send it to the server
   addNewMessage(message) {
     // Check if the message ends with an image file extension
@@ -107,4 +106,3 @@ class App extends Component {
 }
 
 export default App;
-
