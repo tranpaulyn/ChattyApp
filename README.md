@@ -7,7 +7,7 @@ This app focuses on the client side experience.
 
 ### Usage
 
-Open the Client Side folder and the Server Side folder. Install the dependencies and start the server on two seperate terminals. 
+Open the Client Side folder and the Server Side folder. Install the dependencies for each folder. In two seperate terminals npm start the Client Side folder and the Server Side folder. 
 
 ```
 npm install
