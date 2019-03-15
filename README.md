@@ -3,7 +3,7 @@ CUTE CHATTY APP
 
 Chatty App is primarily a client side single page app built with ReactJS. This app communicates with a server using WebSockets for multi-user real-time updates. 
 
-This app focus on the client side experience. 
+This app focuses on the client side experience. 
 
 ### Usage
 
@@ -25,3 +25,4 @@ open http://localhost:3000
 * Webpack
 * [babel-loader](https://github.com/babel/babel-loader)
 * [webpack-dev-server](https://github.com/webpack/webpack-dev-server)
+* WebSockets
