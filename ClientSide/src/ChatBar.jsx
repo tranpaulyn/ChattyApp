@@ -16,7 +16,7 @@ export class ChatBar extends Component {
         this.props.addNewMessage(evt.target.value);
         evt.target.value = null; // Clears the area, ready for next message
       }
-    };
+    }
   }
 
   // Username Change Handler

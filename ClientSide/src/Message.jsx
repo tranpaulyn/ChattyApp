@@ -10,29 +10,26 @@ export class Message extends Component {
 
     // Receive type of message and returns the appropriate HTML
     switch(this.props.message.type) {
-      case "incomingNotification":
+      case 'incomingNotification':
         return (
           <div className="message system">
             {this.props.message.content}
           </div>)
-          break;
 
-      case "incomingMessage":
+      case 'incomingMessage':
         return (
           <div className="message">
             <span style={style} className="message-username">{this.props.message.username}</span>
             <span className="message-content">{this.props.message.content}</span>
           </div>
         );
-          break;
 
-      case "incomingImage":
+      case 'incomingImage':
         return (
           <div className="message">
             <span style={style} className="message-username">{this.props.message.username}</span>
             <span className="message-content"><img className="image" alt="I sent a broken URL!" src={imgURL} /></span>
           </div>)
-          break;
     }
   }
 }

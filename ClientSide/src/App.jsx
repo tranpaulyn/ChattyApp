@@ -7,7 +7,7 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      currentUser: {name: "Anonymous"}, // Set current user as Anonymous until they set their name
+      currentUser: {name: 'Anonymous'}, // Set current user as Anonymous until they set their name
       messages: [],
       notifications: [],
       onlineUsers: [],
@@ -28,23 +28,23 @@ class App extends Component {
       let receivedMessage = JSON.parse(message.data);
 
       switch(receivedMessage.type) {
-        case "incomingMessage":
+        case 'incomingMessage':
           const newMessages = parent.state.messages.concat(receivedMessage);
           parent.setState({messages: newMessages})
           break;
-        case "incomingNotification":
+        case 'incomingNotification':
           const newNotifications = parent.state.messages.concat(receivedMessage);
           parent.setState({messages: newNotifications});
           break;
-        case "userCountChanged":
+        case 'userCountChanged':
           parent.setState({onlineUsers: receivedMessage});
           break;
-        case "incomingImage":
+        case 'incomingImage':
           const newImage = parent.state.messages.concat(receivedMessage);
           parent.setState({messages: newImage})
           break;
         default:
-          throw new Error("Unknown event type " + receivedMessage.type);
+          throw new Error('Unknown event type ' + receivedMessage.type);
       }
     };
 
@@ -62,14 +62,14 @@ class App extends Component {
       const newMessage = {
         username: this.state.currentUser.name, 
         content: message, 
-        type:"postImage"};
+        type:'postImage'};
       let obj = JSON.stringify(newMessage);
       this.ws.send(obj);
     } else {
       const newMessage = {
         username: this.state.currentUser.name, 
         content: message, 
-        type:"postMessage"};
+        type:'postMessage'};
       let obj = JSON.stringify(newMessage);
       this.ws.send(obj);
     }
@@ -87,7 +87,7 @@ class App extends Component {
       const changeNameMessage = {
         username: this.state.currentUser.name, 
         content: changeMessage, 
-        type:"postNotification"}
+        type:'postNotification'}
       let obj = JSON.stringify(changeNameMessage);
       this.ws.send(obj);
     });
